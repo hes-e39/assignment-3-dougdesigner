@@ -2,7 +2,7 @@
     "name": "react-ts-template",
     "private": true,
     "version": "1.0.0",
-    "homepage": "https://hes-e39.github.io/react-ts-template/",
+    "homepage": "https://hes-e39.github.io/assignment-3-dougdesigner/",
     "type": "module",
     "scripts": {
         "dev": "vite",
