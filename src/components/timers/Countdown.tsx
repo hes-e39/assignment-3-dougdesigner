@@ -171,7 +171,7 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
             {!newTimer && !workoutTimer && (
                 <div className="flex flex-col w-full space-y-4 mt-5 min-h-48">
                     {!isCompleted && (
-                        <>{isRunning ? <Button type={isPaused ? 'resume' : 'pause'} onClick={isPaused ? resumeTimer : pauseTimer} /> : inputValid() && <Button type="start" onClick={startTimer} />}</>
+                        <>{isRunning ? <Button type={isPaused ? 'resume' : 'pause'} onClick={isPaused ? resumeTimer : pauseTimer} /> : <Button type="start" onClick={startTimer} disabled={!inputValid()} />}</>
                     )}
 
                     {(isRunning || isPaused || isCompleted) && <Button type="reset" onClick={resetTimer} />}

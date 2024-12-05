@@ -166,7 +166,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, worko
                                     <Button type="pause" onClick={pauseTimer} />
                                 )
                             ) : (
-                                inputValid() && <Button type="start" onClick={startTimer} />
+                                <Button type="start" onClick={startTimer} disabled={!inputValid()} />
                             )}
                         </>
                     )}

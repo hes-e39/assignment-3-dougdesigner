@@ -250,7 +250,7 @@ const Tabata: React.FC<TabataProps> = ({
                                     <Button type="pause" onClick={pauseTimer} />
                                 )
                             ) : (
-                                inputValid() && <Button type="start" onClick={startTimer} />
+                                <Button type="start" onClick={startTimer} disabled={!inputValid()} />
                             )}
                         </>
                     )}

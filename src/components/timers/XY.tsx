@@ -231,7 +231,7 @@ const XY: React.FC<XYProps> = ({
                                     <Button type="pause" onClick={pauseTimer} />
                                 )
                             ) : (
-                                inputValid() && <Button type="start" onClick={startTimer} />
+                                <Button type="start" onClick={startTimer} disabled={!inputValid()} />
                             )}
                         </>
                     )}
