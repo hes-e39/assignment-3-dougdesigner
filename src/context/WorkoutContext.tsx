@@ -204,15 +204,20 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         );
     };
 
-    // Calculate total workout time
-    useEffect(() => {
-        const totalWorkoutTime = timers.reduce((total, timer) => {
+    // Helper function to calculate total workout time
+    const calculateTotalWorkoutTime = (timers: TimerConfig[]) => {
+        return timers.reduce((total, timer) => {
             const workTime = timer.workTime.minutes * 60 + timer.workTime.seconds;
             const restTime = timer.restTime ? timer.restTime.minutes * 60 + timer.restTime.seconds : 0;
             const totalTimePerRound = workTime + restTime;
             const totalTime = timer.totalRounds ? totalTimePerRound * timer.totalRounds : totalTimePerRound;
             return total + totalTime;
         }, 0);
+    };
+
+    // Calculate total workout time
+    useEffect(() => {
+        const totalWorkoutTime = calculateTotalWorkoutTime(timers);
         setTotalWorkoutTime(totalWorkoutTime);
     }, [timers]);
 
