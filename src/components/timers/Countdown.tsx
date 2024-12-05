@@ -77,12 +77,12 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
     // Input change for minutes and seconds functions
     const handleMinutesChange = (minutes: number) => {
         setInputMinutes(minutes);
-        setTotalMilliseconds(targetMilliseconds);
+        setTotalMilliseconds(minutes * 60000 + inputSeconds * 1000);
     };
 
     const handleSecondsChange = (seconds: number) => {
         setInputSeconds(seconds);
-        setTotalMilliseconds(targetMilliseconds);
+        setTotalMilliseconds(inputMinutes * 60000 + seconds * 1000);
     };
 
     // Check if input is valid
