@@ -20,15 +20,15 @@ const router = createHashRouter([
                 element: <WorkoutView />,
             },
             {
-                path: '/timers',
+                path: 'timers',
                 element: <TimersView />,
             },
             {
-                path: '/add',
+                path: 'add',
                 element: <AddTimerView />,
             },
             {
-                path: '/docs',
+                path: 'docs',
                 element: <DocumentationView />,
             },
         ],
