@@ -8,21 +8,17 @@ import TabataInputs from '../generic/TabataInputs';
 import { useEffect, useRef, useState } from 'react';
 import { getHundredths, getMinutes, getSeconds } from '../../utils/helpers';
 
-interface TabataProps {
+import type { BaseTimerProps } from './BaseTimerProps';
+
+interface TabataProps extends BaseTimerProps {
     onChange?: (config: {
         workTime: { minutes: number; seconds: number };
         restTime: { minutes: number; seconds: number };
         totalRounds: number;
         isValid: boolean;
     }) => void;
-    newTimer?: boolean; // Determines if this is a new timer being configured
-    workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
-    workTime?: { minutes: number; seconds: number }; // Work time configuration
     restTime?: { minutes: number; seconds: number }; // Rest time configuration
     totalRounds?: number; // Number of rounds
-    elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
-    active?: boolean; // Determines if the currently active timer in a workout
-    state?: 'not running' | 'running' | 'paused' | 'completed';
 }
 
 const Tabata: React.FC<TabataProps> = ({

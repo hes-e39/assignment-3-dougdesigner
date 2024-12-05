@@ -6,17 +6,13 @@ import Panel from '../generic/Panel';
 import { useEffect, useRef, useState } from 'react';
 import { getDisplayHundredths, getDisplayMinutes, getDisplaySeconds } from '../../utils/helpers';
 
-interface CountdownProps {
+import type { BaseTimerProps } from './BaseTimerProps';
+
+interface CountdownProps extends BaseTimerProps {
     onChange?: (config: {
         workTime: { minutes: number; seconds: number };
         isValid: boolean;
     }) => void;
-    newTimer?: boolean; // Determines if this is a new timer being configured
-    workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
-    workTime?: { minutes: number; seconds: number }; // Work time configuration
-    elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
-    active?: boolean; // Determines if the currently active timer in a workout
-    state?: 'not running' | 'running' | 'paused' | 'completed';
 }
 
 const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds: 0 }, elapsedTime = 0, onChange, newTimer = false, workoutTimer = false, active = false, state = 'not running' }) => {

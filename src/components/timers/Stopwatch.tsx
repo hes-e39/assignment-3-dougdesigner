@@ -6,14 +6,10 @@ import Panel from '../generic/Panel';
 import { useEffect, useRef, useState } from 'react';
 import { getHundredths, getMinutes, getSeconds } from '../../utils/helpers';
 
-interface StopwatchProps {
+import type { BaseTimerProps } from './BaseTimerProps';
+
+interface StopwatchProps extends BaseTimerProps {
     onChange?: (config: { workTime: { minutes: number; seconds: number }; isValid: boolean }) => void;
-    newTimer?: boolean; // Determines if this is a new timer being configured
-    workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
-    workTime?: { minutes: number; seconds: number }; // Work time configuration
-    elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
-    active?: boolean; // Determines if the currently active timer in a workout
-    state?: 'not running' | 'running' | 'paused' | 'completed';
 }
 
 const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, workoutTimer = false, elapsedTime = 0, active = false, state = 'not running', workTime = { minutes: 0, seconds: 0 } }) => {

@@ -7,20 +7,15 @@ import Panel from '../generic/Panel';
 import { useEffect, useRef, useState } from 'react';
 import { getHundredths, getMinutes, getSeconds } from '../../utils/helpers';
 
-interface XYProps {
+import type { BaseTimerProps } from './BaseTimerProps';
+
+interface XYProps extends BaseTimerProps {
     onChange?: (config: {
         workTime: { minutes: number; seconds: number };
         totalRounds: number;
         isValid: boolean;
     }) => void;
-    newTimer?: boolean; // Determines if this is a new timer being configured
-    workoutTimer?: boolean; // Determines if this is a timer being controlled by the workout
-    workTime?: { minutes: number; seconds: number }; // Work time configuration
     totalRounds?: number; // Number of rounds
-    // currentRound?: number; // Current round
-    elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
-    active?: boolean; // Determines if the currently active timer in a workout
-    state?: 'not running' | 'running' | 'paused' | 'completed';
 }
 
 const XY: React.FC<XYProps> = ({
