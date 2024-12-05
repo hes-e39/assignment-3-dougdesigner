@@ -207,7 +207,7 @@ const XY: React.FC<XYProps> = ({
             <hr className="border-slate-700" />
 
             {/* Timer Inputs */}
-            <div className="w-full flex justify-center">
+            <div className="w-full flex">
                 <Inputs
                     minutes={inputMinutes}
                     seconds={inputSeconds}

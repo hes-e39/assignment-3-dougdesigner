@@ -144,7 +144,7 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, worko
             <hr className="border-slate-700" />
 
             {/* Timer Inputs */}
-            <div className="w-full flex justify-center">
+            <div className="w-full flex">
                 <Inputs
                     minutes={inputMinutes}
                     seconds={inputSeconds}

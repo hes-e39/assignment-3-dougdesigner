@@ -222,7 +222,7 @@ const Tabata: React.FC<TabataProps> = ({
             <hr className="border-slate-700" />
 
             {/* Timer Inputs */}
-            <div className="w-full flex justify-center">
+            <div className="w-full flex">
                 <TabataInputs
                     workMinutes={inputWorkMinutes}
                     workSeconds={inputWorkSeconds}

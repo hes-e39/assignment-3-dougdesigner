@@ -138,7 +138,7 @@ const AddTimerView = () => {
                         </svg>
                         Back
                     </NavLink>
-                    <button
+                    {/* <button
                         type="button"
                         onClick={handleSave}
                         disabled={!timerType || !isTimerValid} // Use isTimerValid for button state
@@ -147,7 +147,7 @@ const AddTimerView = () => {
                         }`}
                     >
                         Save timer
-                    </button>
+                    </button> */}
                 </div>
             </div>
 
@@ -182,6 +182,21 @@ const AddTimerView = () => {
                 <div className="hidden mx-auto w-full max-w-sm">
                     <TimersList timers={timers} onRemoveTimer={removeTimer} />
                 </div>
+
+                {isTimerValid && (
+                <div className="flex justify-end">
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={!timerType || !isTimerValid} // Use isTimerValid for button state
+                        className={`ml-3 inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                            !timerType || !isTimerValid ? 'cursor-not-allowed bg-slate-800 focus-visible:outline-slate-800' : 'bg-indigo-600  hover:bg-indigo-500  focus-visible:outline-indigo-600'
+                        }`}
+                    >
+                        Save timer
+                    </button> 
+                </div>
+                )}
             </div>
         </div>
     );

@@ -32,7 +32,7 @@ const TabataInput: React.FC<TabataInputProps> = ({
     disabled = false,
 }) => {
     return (
-        <div className="flex flex-col space-y-4 items-center mt-8">
+        <div className="flex flex-col space-y-4 mt-8">
             <div className="flex space-x-4">
                 <h1 className="text-lg font-semibold text-white self-center">Work:</h1>
                 <Select id="workMinutes" label="Minutes" value={workMinutes} options={minuteOptions} onChange={onWorkMinutesChange} disabled={disabled} />

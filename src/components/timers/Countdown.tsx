@@ -157,7 +157,7 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
             <hr className="border-slate-700" />
 
             {/* Timer Inputs */}
-            <div className="w-full flex justify-center">
+            <div className="w-full flex">
                 <Inputs
                     minutes={inputMinutes}
                     seconds={inputSeconds}
