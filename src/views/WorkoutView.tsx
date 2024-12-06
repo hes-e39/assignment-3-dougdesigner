@@ -11,7 +11,7 @@ import XY from '../components/timers/XY';
 import { useWorkout } from '../context/WorkoutContext';
 
 const WorkoutView = () => {
-    const { timers, currentTimerIndex, removeTimer, startWorkout, nextTimer, resetWorkout, pauseTimer, resumeTimer, isWorkoutEditable, elapsedTime, totalElapsedTime, totalWorkoutTime } = useWorkout();
+    const { timers, currentTimerIndex, removeTimer, startWorkout, nextTimer, resetWorkout, pauseTimer, resumeTimer, isWorkoutEditable, elapsedTime, remainingWorkoutTime, totalWorkoutTime } = useWorkout();
 
     const isWorkoutPaused = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'paused';
     const isWorkoutRunning = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'running';
@@ -85,7 +85,7 @@ const WorkoutView = () => {
                 <div className="flex flex-col items-center">
                     <WorkoutStats
                         totalWorkoutTime={totalWorkoutTime}
-                        elapsedTime={totalElapsedTime}
+                        remainingTime={remainingWorkoutTime}
                         currentTimer={currentTimerIndex !== null ? currentTimerIndex + 1 : 0}
                         totalTimers={timers.length}
                         isWorkPeriod={isWorkoutActive}

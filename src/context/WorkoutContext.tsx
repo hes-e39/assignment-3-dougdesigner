@@ -7,7 +7,6 @@ export interface TimerConfig {
     workTime: { minutes: number; seconds: number };
     restTime?: { minutes: number; seconds: number }; // Optional, for Tabata and XY
     totalRounds?: number; // Optional, for Tabata and XY
-    // currentRound?: number; // Optional, for Tabata and XY
     timerMode?: 'work' | 'rest'; // Optional, for Tabata and XY
     state: 'not running' | 'running' | 'paused' | 'completed';
     skipped?: boolean; // Track if the timer was skipped
@@ -20,6 +19,7 @@ interface WorkoutContextState {
     elapsedTime: number; // Elapsed time in milliseconds for active timer
     totalElapsedTime: number; // Total elapsed time for the workout
     totalWorkoutTime: number; // Total workout time in seconds
+    remainingWorkoutTime: number; // Remaining workout time in seconds
     isWorkoutEditable: boolean; // Track if the workout is editable
     addTimer: (timer: TimerConfig) => void;
     removeTimer: (id: string) => void;
@@ -45,11 +45,12 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     });
 
     const [currentTimerIndex, setCurrentTimerIndex] = useState<number | null>(null);
-
     const [elapsedTime, setElapsedTime] = useState<number>(0); // Elapsed time for active timer in milliseconds
     const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0); // Total elapsed time for the workout
     const [totalWorkoutTime, setTotalWorkoutTime] = useState<number>(0); // Total workout time in seconds
+    const [remainingWorkoutTime, setRemainingWorkoutTime] = useState<number>(0); // Remaining workout time in seconds
     const [isWorkoutEditable, setIsWorkoutEditable] = useState<boolean>(true); // Track if workout is editable
+    const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false); // Track if workout is completed
 
     // Persist timers to localStorage
     useEffect(() => {
@@ -66,32 +67,33 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     useEffect(() => {
         let interval: number | null = null;
 
+        // Only run interval if timer is in running state (not paused)
         if (currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'running') {
             interval = window.setInterval(() => {
-                setElapsedTime(prevElapsedTime => prevElapsedTime + 100);
-                setTotalElapsedTime(prevTotalElapsedTime => prevTotalElapsedTime + 100);
+                setElapsedTime(prev => prev + 100);
+                setTotalElapsedTime(prev => prev + 100);
+                setRemainingWorkoutTime(prev => Math.max(prev - 100, 0));
             }, 100);
-        } else if (elapsedTime !== 0) {
-            clearInterval(interval!);
         }
 
         return () => {
-            if (interval) clearInterval(interval);
+            if (interval) {
+                clearInterval(interval);
+            }
         };
-    }, [currentTimerIndex, timers, elapsedTime]);
+    }, [currentTimerIndex, timers]);
 
     // Automatically advance the timer when the current one is complete
     useEffect(() => {
         if (currentTimerIndex === null) return;
 
         const currentTimer = timers[currentTimerIndex];
+
         if (currentTimer?.state! !== 'running') return;
 
         const workTime = currentTimer.workTime.minutes * 60 + currentTimer.workTime.seconds;
         const restTime = currentTimer.restTime ? currentTimer.restTime.minutes * 60 + currentTimer.restTime.seconds : 0;
-
         const timerRounds = currentTimer.totalRounds || 1;
-
         const totalDuration = (workTime + restTime) * timerRounds * 1000; // Convert to milliseconds
 
         if (elapsedTime >= totalDuration) {
@@ -99,6 +101,17 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             setElapsedTime(0); // Reset elapsed time for the next timer
         }
     }, [elapsedTime, currentTimerIndex, timers]);
+
+    // Helper function to calculate total workout time
+    const calculateTotalWorkoutTime = (timers: TimerConfig[]) => {
+        return timers.reduce((total, timer) => {
+            const workTime = timer.workTime.minutes * 60 + timer.workTime.seconds;
+            const restTime = timer.restTime ? timer.restTime.minutes * 60 + timer.restTime.seconds : 0;
+            const totalTimePerRound = workTime + restTime;
+            const totalTime = timer.totalRounds ? totalTimePerRound * timer.totalRounds : totalTimePerRound;
+            return total + totalTime;
+        }, 0);
+    };
 
     // Add a new timer
     const addTimer = (timer: TimerConfig) => {
@@ -113,9 +126,13 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     // Start the workout from the beginning
     const startWorkout = () => {
         if (timers.length > 0) {
+            setIsWorkoutCompleted(false);
+            const totalWorkoutTime = calculateTotalWorkoutTime(timers);
             setIsWorkoutEditable(false); // Lock the workout from further edits
             setCurrentTimerIndex(0); // Set the first timer as the active timer
             setElapsedTime(0); // Reset elapsed time for the first timer
+            setTotalElapsedTime(0); // Reset total elapsed time
+            setRemainingWorkoutTime(totalWorkoutTime * 1000); // Reset remaining workout time
             setTimers(prevTimers =>
                 prevTimers.map((timer, index) => ({
                     ...timer,
@@ -183,43 +200,46 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 setElapsedTime(0); // Reset elapsed time for the new timer
             } else {
                 // No more timers, end the workout
+                setIsWorkoutCompleted(true);
                 setCurrentTimerIndex(null);
+                setRemainingWorkoutTime(0);
             }
         }
     };
 
     // Reset the workout
     const resetWorkout = () => {
+        setIsWorkoutCompleted(false);
+        const totalWorkoutTime = calculateTotalWorkoutTime(timers);
         setElapsedTime(0); // Reset elapsed time
         setTotalElapsedTime(0); // Reset total elapsed time
+        setRemainingWorkoutTime(totalWorkoutTime * 1000); // Reset remaining workout time
         setIsWorkoutEditable(true); // Re-enable editing after reset
         setCurrentTimerIndex(null);
         setTimers(prevTimers =>
             prevTimers.map(timer => ({
                 ...timer,
                 state: 'not running',
-                // currentRound: 1,
                 skipped: false, // Reset skipped status
             })),
         );
     };
 
-    // Helper function to calculate total workout time
-    const calculateTotalWorkoutTime = (timers: TimerConfig[]) => {
-        return timers.reduce((total, timer) => {
-            const workTime = timer.workTime.minutes * 60 + timer.workTime.seconds;
-            const restTime = timer.restTime ? timer.restTime.minutes * 60 + timer.restTime.seconds : 0;
-            const totalTimePerRound = workTime + restTime;
-            const totalTime = timer.totalRounds ? totalTimePerRound * timer.totalRounds : totalTimePerRound;
-            return total + totalTime;
-        }, 0);
-    };
+    // Update remaining time whenever total elapsed time changes
+    useEffect(() => {
+        const newRemainingWorkoutTime = Math.max(totalWorkoutTime * 1000 - totalElapsedTime, 0);
+        setRemainingWorkoutTime(newRemainingWorkoutTime);
+    }, [totalElapsedTime, totalWorkoutTime]);
 
     // Calculate total workout time
     useEffect(() => {
         const totalWorkoutTime = calculateTotalWorkoutTime(timers);
         setTotalWorkoutTime(totalWorkoutTime);
-    }, [timers]);
+        // Only reset remaining time if workout is reset (not when completed)
+        if (currentTimerIndex === null && !isWorkoutCompleted) {
+            setRemainingWorkoutTime(totalWorkoutTime * 1000);
+        }
+    }, [timers, currentTimerIndex, isWorkoutCompleted]);
 
     return (
         <WorkoutContext.Provider
@@ -229,6 +249,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 elapsedTime,
                 totalElapsedTime,
                 totalWorkoutTime,
+                remainingWorkoutTime,
                 isWorkoutEditable,
                 addTimer,
                 removeTimer,

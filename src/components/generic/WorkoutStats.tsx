@@ -5,7 +5,7 @@ import DisplayTime from '../generic/DisplayTime';
 
 interface WorkoutStatsProps {
     totalWorkoutTime: number; // Total workout time in seconds
-    elapsedTime: number; // Elapsed time in milliseconds
+    remainingTime: number; // Remaning time in milliseconds
     currentTimer: number; // Current timer in the queue
     totalTimers: number; // Total timers in the queue
     isWorkPeriod: boolean; // True if it's a work period, false if it's a rest period
@@ -14,7 +14,7 @@ interface WorkoutStatsProps {
 
 const WorkoutStats: React.FC<WorkoutStatsProps> = ({
     totalWorkoutTime,
-    elapsedTime,
+    remainingTime,
     currentTimer,
     totalTimers,
     isWorkPeriod,
@@ -38,9 +38,9 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({
 
                     {/* Total Elapsed Time */}
                     <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
-                        <p className="text-sm/6 font-medium text-gray-400">Total elapsed time</p>
+                        <p className="text-sm/6 font-medium text-gray-400">Remaning workout time</p>
                         <div className="mt-2 flex items-baseline gap-x-2">
-                            <DisplayTime minutes={Math.floor(elapsedTime / 60000)} seconds={Math.floor((elapsedTime % 60000) / 1000)} hundredths={Math.floor((elapsedTime % 1000) / 10)} />
+                            <DisplayTime minutes={Math.floor(remainingTime / 60000)} seconds={Math.floor((remainingTime % 60000) / 1000)} hundredths={Math.floor((remainingTime % 1000) / 10)} />
                         </div>
                     </div>
 
