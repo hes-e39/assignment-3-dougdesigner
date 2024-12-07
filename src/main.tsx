@@ -9,6 +9,7 @@ import AddTimerView from './views/AddTimerView';
 import DocumentationView from './views/DocumentationView';
 import TimersView from './views/TimersView';
 import WorkoutView from './views/WorkoutView';
+import NotFoundView from './views/NotFoundView';
 
 const router = createHashRouter([
     {
@@ -31,6 +32,10 @@ const router = createHashRouter([
                 path: 'docs',
                 element: <DocumentationView />,
             },
+            {
+                path: '*',
+                element: <NotFoundView />,
+            }
         ],
     },
 ]);

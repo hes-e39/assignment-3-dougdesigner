@@ -216,7 +216,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         if (currentTimerIndex !== null) {
             const nextIndex = currentTimerIndex + 1;
 
-            // Stabilize elapsedTime and totalElapsedTime references
+            // Stabilize elapsedTime and totalElapsedTime references to minimize ms drift
             const stabilizedElapsedTime = elapsedTime;
             const stabilizedTotalElapsedTime = totalElapsedTime;
 
