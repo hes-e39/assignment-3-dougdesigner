@@ -1,5 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { getTimersFromUrl, updateUrlWithTimers } from '../services/urlState';
+import { WorkoutStateManager } from '../services/storageState';
+
 // Timer configuration types
 export interface TimerConfig {
     id: string;
@@ -39,23 +42,37 @@ interface WorkoutProviderProps {
 }
 
 export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) => {
+    // Load saved state first
+    const savedState = WorkoutStateManager.loadState();
+
     const [timers, setTimers] = useState<TimerConfig[]>(() => {
-        const savedTimers = localStorage.getItem('workoutTimers');
-        return savedTimers ? JSON.parse(savedTimers) : [];
+        if (savedState?.timers) {
+            console.log('Loading timers from saved state:', savedState.timers);
+            // Explicitly preserve the timer states when loading
+            return savedState.timers.map(timer => ({
+                ...timer,
+                state: timer.state // Ensure state is preserved
+            }));
+        }
+        return getTimersFromUrl();
     });
 
-    const [currentTimerIndex, setCurrentTimerIndex] = useState<number | null>(null);
-    const [elapsedTime, setElapsedTime] = useState<number>(0); // Elapsed time for active timer in milliseconds
-    const [totalElapsedTime, setTotalElapsedTime] = useState<number>(0); // Total elapsed time for the workout
+    const [currentTimerIndex, setCurrentTimerIndex] = useState<number | null>(() =>  
+        savedState?.currentTimerIndex || null
+    );
+
+    const [elapsedTime, setElapsedTime] = useState<number>(() => 
+        savedState?.elapsedTime || 0
+    ); // Elapsed time for active timer in milliseconds
+
+    const [totalElapsedTime, setTotalElapsedTime] = useState<number>(() => 
+        savedState?.totalElapsedTime || 0
+    ); // Total elapsed time for the workout
+
     const [totalWorkoutTime, setTotalWorkoutTime] = useState<number>(0); // Total workout time in seconds
     const [remainingWorkoutTime, setRemainingWorkoutTime] = useState<number>(0); // Remaining workout time in seconds
     const [isWorkoutEditable, setIsWorkoutEditable] = useState<boolean>(true); // Track if workout is editable
     const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false); // Track if workout is completed
-
-    // Persist timers to localStorage
-    useEffect(() => {
-        localStorage.setItem('workoutTimers', JSON.stringify(timers));
-    }, [timers]);
 
     // Automatically update `isWorkoutEditable` based on workout state
     useEffect(() => {
@@ -66,9 +83,16 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     // Automatically update elapsed time and total elapsed time when the workout is running
     useEffect(() => {
         let interval: number | null = null;
+        const currentTimer = currentTimerIndex !== null ? timers[currentTimerIndex] : null;
+
+        // console.log('Timer state check:', {
+        //     currentIndex: currentTimerIndex,
+        //     timerState: currentTimer?.state,
+        //     isRunning: currentTimer?.state === 'running'
+        // });
 
         // Only run interval if timer is in running state (not paused)
-        if (currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'running') {
+        if (currentTimerIndex !== null && currentTimer?.state === 'running') {
             interval = window.setInterval(() => {
                 setElapsedTime(prev => prev + 100);
                 setTotalElapsedTime(prev => prev + 100);
@@ -115,12 +139,20 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
 
     // Add a new timer
     const addTimer = (timer: TimerConfig) => {
-        setTimers(prevTimers => [...prevTimers, { ...timer }]);
+        setTimers(prevTimers => {
+            const newTimers = [...prevTimers, { ...timer }];
+            updateUrlWithTimers(newTimers);
+            return newTimers;
+        });
     };
 
     // Remove a timer
     const removeTimer = (id: string) => {
-        setTimers(prevTimers => prevTimers.filter(timer => timer.id !== id));
+        setTimers(prevTimers => {
+            const newTimers = prevTimers.filter(timer => timer.id !== id);
+            updateUrlWithTimers(newTimers);
+            return newTimers;
+        });
     };
 
     // Start the workout from the beginning
@@ -157,12 +189,25 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     // Pause the currently active timer
     const pauseTimer = () => {
         if (currentTimerIndex !== null) {
-            setTimers(prevTimers =>
-                prevTimers.map((timer, index) => ({
+            setTimers(prevTimers => {
+                const newTimers = prevTimers.map((timer, index) => ({
                     ...timer,
                     state: index === currentTimerIndex ? 'paused' : timer.state,
-                })),
-            );
+                }));
+                
+                // Save state immediately when pausing
+                WorkoutStateManager.saveStateImmediate({
+                    timers: newTimers,
+                    currentTimerIndex,
+                    elapsedTime,
+                    totalElapsedTime,
+                    lastUpdated: Date.now(),
+                    isWorkoutEditable: false,
+                    isWorkoutPaused: true
+                });
+                
+                return newTimers;
+            });
         }
     };
 
@@ -170,6 +215,18 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     const nextTimer = (skip = false) => {
         if (currentTimerIndex !== null) {
             const nextIndex = currentTimerIndex + 1;
+
+            // Stabilize elapsedTime and totalElapsedTime references
+            const stabilizedElapsedTime = elapsedTime;
+            const stabilizedTotalElapsedTime = totalElapsedTime;
+
+            // Current timer and skipped time calculation
+            const currentTimer = timers[currentTimerIndex];
+            const currentTimerDuration = (currentTimer.workTime.minutes * 60 + currentTimer.workTime.seconds) * 1000;
+            const skippedTime = skip ? currentTimerDuration - stabilizedElapsedTime : 0;
+
+            // Calculate total elapsed time directly
+            const updatedTotalElapsedTime = stabilizedTotalElapsedTime + stabilizedElapsedTime + skippedTime;
 
             setTimers(prevTimers =>
                 prevTimers.map((timer, index) => {
@@ -196,14 +253,32 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             );
 
             if (nextIndex < timers.length) {
+                // Move to the next timer
                 setCurrentTimerIndex(nextIndex); // Update to the next timer
                 setElapsedTime(0); // Reset elapsed time for the new timer
+
+                // Update total elapsed time
+                setTotalElapsedTime(updatedTotalElapsedTime);
             } else {
                 // No more timers, end the workout
                 setIsWorkoutCompleted(true);
                 setCurrentTimerIndex(null);
                 setRemainingWorkoutTime(0);
+
+                // Update total elapsed time with the last timer's remaining time
+                setTotalElapsedTime(updatedTotalElapsedTime);
             }
+
+            // Save updated state
+            WorkoutStateManager.saveState({
+                timers,
+                currentTimerIndex: nextIndex < timers.length ? nextIndex : null,
+                elapsedTime: 0,
+                totalElapsedTime: updatedTotalElapsedTime,
+                lastUpdated: Date.now(),
+                isWorkoutEditable,
+                isWorkoutPaused : currentTimer.state === 'paused',
+            });
         }
     };
 
@@ -240,6 +315,30 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             setRemainingWorkoutTime(totalWorkoutTime * 1000);
         }
     }, [timers, currentTimerIndex, isWorkoutCompleted]);
+
+    // Save state when relevant values change
+    useEffect(() => {
+        if (currentTimerIndex !== null) {
+            const currentTimer = timers[currentTimerIndex];
+            console.log('Saving state - current timer state:', currentTimer.state);
+            WorkoutStateManager.saveState({
+                timers,
+                currentTimerIndex,
+                elapsedTime,
+                totalElapsedTime,
+                lastUpdated: Date.now(),
+                isWorkoutEditable: false,
+                isWorkoutPaused: currentTimer.state === 'paused',
+            });
+        }
+    }, [timers, currentTimerIndex, elapsedTime, totalElapsedTime]);
+
+    // Clear stored state when workout is reset or completed
+    useEffect(() => {
+        if (currentTimerIndex === null) {
+            WorkoutStateManager.clearState();
+        }
+    }, [currentTimerIndex]);
 
     return (
         <WorkoutContext.Provider

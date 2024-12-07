@@ -111,6 +111,8 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
     useEffect(() => {
         // Handle timer state changes, including reset
         if (workoutTimer) {
+            // console.log('Timer receiving state:', state, 'isPaused:', isPaused, 'active:', active);
+
             if (state === 'not running') {
                 resetTimer(); // Always reset the timer, regardless of `active`
             } else if (state === 'completed') {

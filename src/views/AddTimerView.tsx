@@ -23,9 +23,12 @@ const AddTimerView = () => {
                 type: timerType,
                 ...timerConfig,
                 state: 'not running',
+                skipped: false
             };
+
             addTimer(timer);
-            alert('Timer added successfully!');
+
+            // alert('Timer added successfully!');
             resetForm();
             navigate('/'); // Redirect to /work after saving
         } else {
@@ -45,42 +48,44 @@ const AddTimerView = () => {
                 return {
                     type: 'stopwatch',
                     workTime: { minutes: 0, seconds: 0 },
-                    rounds: 1,
-                    currentRound: 1,
-                    timerMode: 'work',
-                    state: 'not running',
-                    skipped: false,
+                    // rounds: 1,
+                    // currentRound: 1,
+                    // timerMode: 'work',
+                    // state: 'not running',
+                    // skipped: false,
                 };
             case 'Countdown':
                 return {
                     type: 'countdown',
                     workTime: { minutes: 0, seconds: 0 },
-                    rounds: 1,
-                    currentRound: 1,
-                    timerMode: 'work',
-                    state: 'not running',
-                    skipped: false,
+                    // rounds: 1,
+                    // currentRound: 1,
+                    // timerMode: 'work',
+                    // state: 'not running',
+                    // skipped: false,
                 };
             case 'XY':
                 return {
                     type: 'xy',
                     workTime: { minutes: 0, seconds: 0 },
-                    rounds: 1,
-                    currentRound: 1,
-                    timerMode: 'work',
-                    state: 'not running',
-                    skipped: false,
+                    totalRounds: 1,
+                    // rounds: 1,
+                    // currentRound: 1,
+                    // timerMode: 'work',
+                    // state: 'not running',
+                    // skipped: false,
                 };
             case 'Tabata':
                 return {
                     type: 'tabata',
                     workTime: { minutes: 0, seconds: 0 },
                     restTime: { minutes: 0, seconds: 0 },
-                    rounds: 1,
-                    currentRound: 1,
-                    timerMode: 'work',
-                    state: 'not running',
-                    skipped: false,
+                    totalRounds: 1,
+                    // rounds: 1,
+                    // currentRound: 1,
+                    // timerMode: 'work',
+                    // state: 'not running',
+                    // skipped: false,
                 };
             default:
                 return null;

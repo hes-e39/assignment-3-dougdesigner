@@ -104,6 +104,8 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, worko
 
     // Handle timer state changes
     useEffect(() => {
+        // console.log('Timer receiving state:', state, 'isPaused:', isPaused, 'active:', active);
+
         if (workoutTimer) {
             if (state === 'not running') {
                 resetTimer(); // Always reset the timer
