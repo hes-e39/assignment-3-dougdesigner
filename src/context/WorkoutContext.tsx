@@ -27,6 +27,7 @@ interface WorkoutContextState {
     isWorkoutEditable: boolean; // Track if the workout is editable
     addTimer: (timer: TimerConfig) => void;
     removeTimer: (id: string) => void;
+    updateTimer: (id: string, updatedTimer: TimerConfig) => void;
     startWorkout: () => void;
     nextTimer: (skip?: boolean) => void; // Optional skip parameter
     resetWorkout: () => void;
@@ -152,6 +153,17 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         setTimers(prevTimers => {
             const newTimers = prevTimers.filter(timer => timer.id !== id);
             updateUrlWithTimers(newTimers);
+            return newTimers;
+        });
+    };
+
+    // Update an existing timer
+    const updateTimer = (id: string, updatedTimer: TimerConfig) => {
+        setTimers(prevTimers => {
+            const newTimers = prevTimers.map(timer =>
+                timer.id === id ? { ...timer, ...updatedTimer } : timer
+            );
+            updateUrlWithTimers(newTimers); // Update URL to reflect the changes
             return newTimers;
         });
     };
@@ -284,7 +296,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             }
 
             // Save updated state
-            WorkoutStateManager.saveState({
+            WorkoutStateManager.saveStateImmediate({
                 timers,
                 currentTimerIndex: nextIndex < timers.length ? nextIndex : null,
                 elapsedTime: 0,
@@ -371,6 +383,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 resetWorkout,
                 pauseTimer,
                 resumeTimer,
+                updateTimer,
             }}
         >
             {children}

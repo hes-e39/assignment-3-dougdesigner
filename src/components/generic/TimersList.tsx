@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { TimerConfig } from '../../context/WorkoutContext';
 import EmptyState from '../generic/EmptyState';
 import TimerBadge from '../generic/TimerBadge';
+import { NavLink } from 'react-router-dom';
 
 interface TimersListProps {
     timers: TimerConfig[];
@@ -110,10 +111,21 @@ const TimersList: React.FC<TimersListProps> = ({
                                 {!disableRemove && onRemoveTimer && (
                                     <button
                                         onClick={() => onRemoveTimer(timer.id)}
-                                        className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        className="rounded-full bg-gray-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                                     >
                                         Remove
                                     </button>
+                                )}
+
+
+                                {/* Edit Button */}
+                                {!disableRemove && (
+                                    <NavLink
+                                        to={`/edit/${timer.id}`}
+                                        className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    >
+                                        Edit
+                                    </NavLink>
                                 )}
                             </div>
                         </li>

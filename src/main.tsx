@@ -10,6 +10,7 @@ import DocumentationView from './views/DocumentationView';
 import TimersView from './views/TimersView';
 import WorkoutView from './views/WorkoutView';
 import NotFoundView from './views/NotFoundView';
+import EditTimerView from './views/EditTimerView';
 
 const router = createHashRouter([
     {
@@ -31,6 +32,10 @@ const router = createHashRouter([
             {
                 path: 'docs',
                 element: <DocumentationView />,
+            },
+            {
+                path: 'edit/:id',
+                element: <EditTimerView />,
             },
             {
                 path: '*',
