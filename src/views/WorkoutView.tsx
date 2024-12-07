@@ -116,14 +116,14 @@ const WorkoutView = () => {
                                 case 'stopwatch':
                                     return (
                                         <div key={timer.id} className="timer-container">
-                                            <Stopwatch workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} />
+                                            <Stopwatch workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description} />
                                         </div>
                                     );
 
                                 case 'countdown':
                                     return (
                                         <div key={timer.id} className="timer-container">
-                                            <Countdown workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} />
+                                            <Countdown workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description} />
                                         </div>
                                     );
 
@@ -138,6 +138,7 @@ const WorkoutView = () => {
                                                 state={timer.state}
                                                 active={isActive}
                                                 elapsedTime={isActive ? elapsedTime : 0}
+                                                description={timer.description}
                                             />
                                         </div>
                                     );
@@ -145,7 +146,7 @@ const WorkoutView = () => {
                                 case 'xy':
                                     return (
                                         <div key={timer.id} className="timer-container">
-                                            <XY workoutTimer workTime={timer.workTime} totalRounds={timer.totalRounds} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} />
+                                            <XY workoutTimer workTime={timer.workTime} totalRounds={timer.totalRounds} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description}/>
                                         </div>
                                     );
 

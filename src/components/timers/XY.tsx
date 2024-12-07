@@ -28,6 +28,7 @@ const XY: React.FC<XYProps> = ({
     // currentRound = 1,
     active = false,
     state = 'not running',
+    description
 }) => {
     const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
     const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
@@ -186,7 +187,7 @@ const XY: React.FC<XYProps> = ({
     return (
         <Panel
             title="XY"
-            description="A timer that counts down from X time per round, for Y number of rounds (e.g. 1 minute for 10 rounds would count down from 1 minute to 0, then start another countdown, etc, 10 times)."
+            description={ description || "A timer that counts down from X time per round, for Y number of rounds (e.g. 1 minute for 10 rounds would count down from 1 minute to 0, then start another countdown, etc, 10 times)."}
         >
             <div className="mb-8">
                 {/* Timer Display */}

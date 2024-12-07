@@ -13,6 +13,7 @@ export interface TimerConfig {
     timerMode?: 'work' | 'rest'; // Optional, for Tabata and XY
     state: 'not running' | 'running' | 'paused' | 'completed';
     skipped?: boolean; // Track if the timer was skipped
+    description?: string; // Workout timer description
 }
 
 // Context State

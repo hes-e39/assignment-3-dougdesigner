@@ -14,6 +14,8 @@ const AddTimerView = () => {
     const [timerConfig, setTimerConfig] = useState<any>(null); // Store the configuration for the current timer
     const [isTimerValid, setIsTimerValid] = useState(false); // Track if the timer is valid
 
+    const [description, setDescription] = useState<string>(''); // Description for the timer
+
     const navigate = useNavigate(); // Initialize navigate hook
 
     const handleSave = () => {
@@ -23,7 +25,8 @@ const AddTimerView = () => {
                 type: timerType,
                 ...timerConfig,
                 state: 'not running',
-                skipped: false
+                skipped: false,
+                description: description,
             };
 
             addTimer(timer);
@@ -182,22 +185,42 @@ const AddTimerView = () => {
                     </div>
                 </div>
 
-                <div className="md:flex md:items-center md:justify-between">{renderTimerInputs()}</div>
+                <div className="md:flex md:items-center md:justify-between">
+                    {renderTimerInputs()}
+                </div>
 
                 <div className="hidden mx-auto w-full max-w-sm">
                     <TimersList timers={timers} onRemoveTimer={removeTimer} />
                 </div>
 
+
+
                 {isTimerValid && (
-                <div className="flex justify-end">
-                    <button
-                        type="button"
-                        onClick={handleSave}
-                        className="ml-3 inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600  hover:bg-indigo-500  focus-visible:outline-indigo-600"
-                    >
-                        Save timer
-                    </button> 
-                </div>
+                    <div>
+                        <div className="px-4 pb-6 ">
+                            <label htmlFor="description" className="block text-lg font-semibold text-white">
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                id="description"
+                                placeholder="e.g., 50 push-ups"
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                className="mt-2 mr-2 py-2 px-4 block w-full bg-gray-800 border-2 border-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                            />
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button
+                                type="button"
+                                onClick={handleSave}
+                                className="ml-3 inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600  hover:bg-indigo-500  focus-visible:outline-indigo-600"
+                            >
+                                Save timer
+                            </button> 
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

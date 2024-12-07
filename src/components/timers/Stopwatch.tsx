@@ -12,7 +12,7 @@ interface StopwatchProps extends BaseTimerProps {
     onChange?: (config: { workTime: { minutes: number; seconds: number }; isValid: boolean }) => void;
 }
 
-const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, workoutTimer = false, elapsedTime = 0, active = false, state = 'not running', workTime = { minutes: 0, seconds: 0 } }) => {
+const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, workoutTimer = false, elapsedTime = 0, active = false, state = 'not running', workTime = { minutes: 0, seconds: 0 }, description }) => {
     const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
     const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
     const [totalMilliseconds, setTotalMilliseconds] = useState(0);
@@ -135,7 +135,10 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, worko
     }, []);
 
     return (
-        <Panel title="Stopwatch" description="A timer that counts up to X amount of time (e.g. count up to 2 minutes and 30 seconds, starting at 0)">
+        <Panel 
+            title="Stopwatch" 
+            description={ description || "A timer that counts up to X amount of time (e.g. count up to 2 minutes and 30 seconds, starting at 0)"}
+            >
             {/* Timer Display */}
             {!newTimer && (
                 <div className="w-full flex justify-center mb-8">

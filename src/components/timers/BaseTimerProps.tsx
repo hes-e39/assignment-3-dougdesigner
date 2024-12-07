@@ -5,4 +5,5 @@ export interface BaseTimerProps {
     elapsedTime?: number; // Elapsed time in milliseconds provided in workout context
     active?: boolean; // Determines if the currently active timer in a workout
     state?: 'not running' | 'running' | 'paused' | 'completed';
+    description?: string; // Workout timer description
 }

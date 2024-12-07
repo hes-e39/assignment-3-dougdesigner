@@ -15,7 +15,7 @@ interface CountdownProps extends BaseTimerProps {
     }) => void;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds: 0 }, elapsedTime = 0, onChange, newTimer = false, workoutTimer = false, active = false, state = 'not running' }) => {
+const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds: 0 }, elapsedTime = 0, onChange, newTimer = false, workoutTimer = false, active = false, state = 'not running', description }) => {
     const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
     const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
     const [totalMilliseconds, setTotalMilliseconds] = useState(workoutTimer ? workTime.minutes * 60000 + workTime.seconds * 1000 : 0);
@@ -143,7 +143,7 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
     }, []);
 
     return (
-        <Panel title="Countdown" description="A timer that counts down from X amount of time (e.g. count down to 0, starting at 2 minutes and 30)">
+        <Panel title="Countdown" description={ description || "A timer that counts down from X amount of time (e.g. count down to 0, starting at 2 minutes and 30)"}>
             {/* Timer Display */}
             {!newTimer && (
                 <div className="w-full flex justify-center mb-8">

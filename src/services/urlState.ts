@@ -14,6 +14,7 @@ export const encodeTimerConfig = (timers: TimerConfig[]): string => {
     }
     
     str += `|${timer.totalRounds || ''}`;
+    str += `|${timer.description || ''}`;
     
     return str;
   });
@@ -25,7 +26,7 @@ export const decodeTimerConfig = (encoded: string): TimerConfig[] => {
   if (!encoded) return [];
 
   return encoded.split(';').map(timer => {
-    const [type, work, rest, rounds] = timer.split('|');
+    const [type, work, rest, rounds, description] = timer.split('|');
     const [workMinutes, workSeconds] = work.split(',').map(Number);
 
     // Validate timer type
@@ -52,6 +53,7 @@ export const decodeTimerConfig = (encoded: string): TimerConfig[] => {
         seconds: workSeconds,
       },
       state: 'not running',
+      description: description ? description : undefined,
     };
 
     // Validate rest time
