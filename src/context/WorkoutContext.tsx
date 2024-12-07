@@ -219,19 +219,38 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
 
             // Stabilize elapsedTime and totalElapsedTime references to minimize ms drift
             const stabilizedElapsedTime = elapsedTime;
-            const stabilizedTotalElapsedTime = totalElapsedTime;
+            // const stabilizedTotalElapsedTime = totalElapsedTime;
 
             // Current timer and skipped time calculation
             const currentTimer = timers[currentTimerIndex];
-            const currentTimerDuration = (currentTimer.workTime.minutes * 60 + currentTimer.workTime.seconds) * 1000;
+            const workTime = currentTimer.workTime.minutes * 60 + currentTimer.workTime.seconds;
+            const restTime = currentTimer.restTime
+                ? currentTimer.restTime.minutes * 60 + currentTimer.restTime.seconds
+                : 0;
+            const rounds = currentTimer.totalRounds || 1;
+            const currentTimerDuration = (workTime + restTime) * rounds * 1000; // Total duration in ms
             const skippedTime = skip ? currentTimerDuration - stabilizedElapsedTime : 0;
 
             // Calculate total elapsed time directly
-            const updatedTotalElapsedTime = stabilizedTotalElapsedTime + stabilizedElapsedTime + skippedTime;
+            const updatedTotalElapsedTime = timers.reduce((total, timer, index) => {
+                if (index < currentTimerIndex) {
+                    // Add durations of fully completed timers
+                    const timerWorkTime = timer.workTime.minutes * 60 + timer.workTime.seconds;
+                    const timerRestTime = timer.restTime
+                        ? timer.restTime.minutes * 60 + timer.restTime.seconds
+                        : 0;
+                    const timerRounds = timer.totalRounds || 1;
+                    return total + (timerWorkTime + timerRestTime) * timerRounds * 1000;
+                } else if (index === currentTimerIndex) {
+                    // Add elapsed and skipped time of the current timer
+                    return total + stabilizedElapsedTime + skippedTime;
+                }
+                return total;
+            }, 0);
 
+            // Update timers state
             setTimers(prevTimers =>
                 prevTimers.map((timer, index) => {
-                    // Handle the current timer
                     if (index === currentTimerIndex) {
                         return {
                             ...timer,
@@ -239,35 +258,29 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                             skipped: skip ? true : timer.skipped, // Mark as skipped if applicable
                         };
                     }
-
-                    // Handle the next timer
                     if (index === nextIndex) {
                         return {
                             ...timer,
                             state: 'running', // Start the next timer
                         };
                     }
-
-                    // Return other timers unchanged
-                    return timer;
-                }),
+                    return timer; // Return other timers unchanged
+                })
             );
 
             if (nextIndex < timers.length) {
                 // Move to the next timer
                 setCurrentTimerIndex(nextIndex); // Update to the next timer
                 setElapsedTime(0); // Reset elapsed time for the new timer
-
-                // Update total elapsed time
-                setTotalElapsedTime(updatedTotalElapsedTime);
+                setTotalElapsedTime(updatedTotalElapsedTime); // Update total elapsed time
+                setRemainingWorkoutTime(totalWorkoutTime - updatedTotalElapsedTime / 1000); // Update remaining workout time
             } else {
                 // No more timers, end the workout
                 setIsWorkoutCompleted(true);
                 setCurrentTimerIndex(null);
-                setRemainingWorkoutTime(0);
-
-                // Update total elapsed time with the last timer's remaining time
-                setTotalElapsedTime(updatedTotalElapsedTime);
+                setElapsedTime(0); // Reset elapsed time for the last timer
+                setTotalElapsedTime(updatedTotalElapsedTime); // Finalize total elapsed time
+                setRemainingWorkoutTime(0); // No time left in the workout
             }
 
             // Save updated state
@@ -278,7 +291,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 totalElapsedTime: updatedTotalElapsedTime,
                 lastUpdated: Date.now(),
                 isWorkoutEditable,
-                isWorkoutPaused : currentTimer.state === 'paused',
+                isWorkoutPaused: currentTimer.state === 'paused',
             });
         }
     };
