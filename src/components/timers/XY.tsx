@@ -23,7 +23,7 @@ const XY: React.FC<XYProps> = ({
     newTimer = false,
     workoutTimer = false,
     workTime = { minutes: 0, seconds: 0 },
-    elapsedTime = 0,
+    currentTimerElapsedtime = 0,
     totalRounds = 1,
     // currentRound = 1,
     active = false,
@@ -144,14 +144,14 @@ const XY: React.FC<XYProps> = ({
         }
     }, [inputMinutes, inputSeconds, rounds, newTimer, onChange]);
 
-    // Synchronize `totalMilliseconds` with `elapsedTime` in workout mode
+    // Synchronize `totalMilliseconds` with `currentTimerElapsedtime` in workout mode
     useEffect(() => {
         if (workoutTimer && active) {
-            const elapsedForRound = elapsedTime % targetMilliseconds;
+            const elapsedForRound = currentTimerElapsedtime % targetMilliseconds;
             setTotalMilliseconds(Math.max(targetMilliseconds - elapsedForRound, 0));
-            currentRoundRef.current = Math.min(Math.floor(elapsedTime / targetMilliseconds) + 1, rounds);
+            currentRoundRef.current = Math.min(Math.floor(currentTimerElapsedtime / targetMilliseconds) + 1, rounds);
         }
-    }, [elapsedTime, workoutTimer, active, targetMilliseconds, rounds]);
+    }, [currentTimerElapsedtime, workoutTimer, active, targetMilliseconds, rounds]);
 
     // Handle timer state changes
     useEffect(() => {

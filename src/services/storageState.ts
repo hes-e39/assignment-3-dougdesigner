@@ -3,7 +3,7 @@ import { TimerConfig } from '../context/WorkoutContext';
 interface WorkoutState {
   timers: TimerConfig[];
   currentTimerIndex: number | null;
-  elapsedTime: number;
+  currentTimerElapsedtime: number;
   totalElapsedTime: number;
   lastUpdated: number;
   isWorkoutEditable: boolean;

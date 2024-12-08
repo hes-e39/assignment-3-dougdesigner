@@ -12,7 +12,7 @@ interface StopwatchProps extends BaseTimerProps {
     onChange?: (config: { workTime: { minutes: number; seconds: number }; isValid: boolean }) => void;
 }
 
-const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, workoutTimer = false, elapsedTime = 0, active = false, state = 'not running', workTime = { minutes: 0, seconds: 0 }, description }) => {
+const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, workoutTimer = false, currentTimerElapsedtime = 0, active = false, state = 'not running', workTime = { minutes: 0, seconds: 0 }, description }) => {
     const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
     const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
     const [totalMilliseconds, setTotalMilliseconds] = useState(0);
@@ -95,12 +95,12 @@ const Stopwatch: React.FC<StopwatchProps> = ({ onChange, newTimer = false, worko
         }
     }, [inputMinutes, inputSeconds, onChange, newTimer]);
 
-    // Synchronize `totalMilliseconds` with `elapsedTime` if in workout mode
+    // Synchronize `totalMilliseconds` with `currentTimerElapsedtime` if in workout mode
     useEffect(() => {
         if (workoutTimer && active) {
-            setTotalMilliseconds(elapsedTime);
+            setTotalMilliseconds(currentTimerElapsedtime);
         }
-    }, [elapsedTime, workoutTimer, active]);
+    }, [currentTimerElapsedtime, workoutTimer, active]);
 
     // Handle timer state changes
     useEffect(() => {

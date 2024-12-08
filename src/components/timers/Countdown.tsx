@@ -15,7 +15,7 @@ interface CountdownProps extends BaseTimerProps {
     }) => void;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds: 0 }, elapsedTime = 0, onChange, newTimer = false, workoutTimer = false, active = false, state = 'not running', description }) => {
+const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds: 0 }, currentTimerElapsedtime = 0, onChange, newTimer = false, workoutTimer = false, active = false, state = 'not running', description }) => {
     const [inputMinutes, setInputMinutes] = useState(workTime.minutes);
     const [inputSeconds, setInputSeconds] = useState(workTime.seconds);
     const [totalMilliseconds, setTotalMilliseconds] = useState(workoutTimer ? workTime.minutes * 60000 + workTime.seconds * 1000 : 0);
@@ -100,13 +100,13 @@ const Countdown: React.FC<CountdownProps> = ({ workTime = { minutes: 0, seconds:
         }
     }, [inputMinutes, inputSeconds, newTimer, onChange]);
 
-    // Synchronize `totalMilliseconds` with `elapsedTime`
+    // Synchronize `totalMilliseconds` with `currentTimerElapsedtime`
     useEffect(() => {
         if (workoutTimer && active) {
-            const remainingMilliseconds = targetMilliseconds - elapsedTime;
+            const remainingMilliseconds = targetMilliseconds - currentTimerElapsedtime;
             setTotalMilliseconds(Math.max(remainingMilliseconds, 0));
         }
-    }, [elapsedTime, targetMilliseconds, workoutTimer]);
+    }, [currentTimerElapsedtime, targetMilliseconds, workoutTimer]);
 
     useEffect(() => {
         // Handle timer state changes, including reset

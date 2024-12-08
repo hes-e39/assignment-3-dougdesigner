@@ -5,7 +5,7 @@ import Loading from '../components/generic/Loading';
 /**
  * You can document your components by using the DocumentComponent component
  */
-const Documentation = () => {
+const DocumentationView = () => {
     return (
         <div>
             <div className="md:flex md:items-center md:justify-between py-8">
@@ -29,4 +29,4 @@ const Documentation = () => {
     );
 };
 
-export default Documentation;
+export default DocumentationView;

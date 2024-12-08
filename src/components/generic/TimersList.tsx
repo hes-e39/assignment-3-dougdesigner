@@ -80,7 +80,7 @@ const SortableTimer = ({
         <li
             ref={setNodeRef}
             style={style}
-            className={`relative flex items-center space-x-4 px-2  py-4 ${isDragging ? 'bg-slate-800 rounded-md' : ''}`}
+            className={`relative flex items-center space-x-4 pr-2 py-4 ${isDragging ? 'bg-slate-800 rounded-md' : ''}`}
         >
             <div 
                 className={`flex flex-1 items-center ${!disableRemove ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}

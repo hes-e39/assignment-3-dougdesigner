@@ -27,7 +27,7 @@ const Tabata: React.FC<TabataProps> = ({
     workoutTimer = false,
     workTime = { minutes: 0, seconds: 0 },
     restTime = { minutes: 0, seconds: 0 },
-    elapsedTime = 0,
+    currentTimerElapsedtime = 0,
     totalRounds = 1,
     active = false,
     state = 'not running',
@@ -150,12 +150,12 @@ const Tabata: React.FC<TabataProps> = ({
         }
     }, [inputWorkMinutes, inputWorkSeconds, inputRestMinutes, inputRestSeconds, rounds, newTimer, onChange]);
 
-    // Synchronize `totalMilliseconds` with `elapsedTime` in workout mode
+    // Synchronize `totalMilliseconds` with `currentTimerElapsedtime` in workout mode
     useEffect(() => {
         if (workoutTimer && active) {
             const roundTime = workMilliseconds + restMilliseconds;
-            const elapsedInRound = elapsedTime % roundTime;
-            const elapsedRounds = Math.floor(elapsedTime / roundTime);
+            const elapsedInRound = currentTimerElapsedtime % roundTime;
+            const elapsedRounds = Math.floor(currentTimerElapsedtime / roundTime);
 
             currentRoundRef.current = Math.min(elapsedRounds + 1, rounds);
 
@@ -167,7 +167,7 @@ const Tabata: React.FC<TabataProps> = ({
                 setTotalMilliseconds(Math.max(roundTime - elapsedInRound, 0));
             }
         }
-    }, [elapsedTime, workMilliseconds, restMilliseconds, rounds, workoutTimer, active]);
+    }, [currentTimerElapsedtime, workMilliseconds, restMilliseconds, rounds, workoutTimer, active]);
 
     // Handle timer state changes
     useEffect(() => {

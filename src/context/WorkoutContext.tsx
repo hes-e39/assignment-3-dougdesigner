@@ -20,7 +20,7 @@ export interface TimerConfig {
 interface WorkoutContextState {
     timers: TimerConfig[];
     currentTimerIndex: number | null; // Index of the active timer
-    elapsedTime: number; // Elapsed time in milliseconds for active timer
+    currentTimerElapsedtime: number; // Elapsed time in milliseconds for active timer
     totalElapsedTime: number; // Total elapsed time for the workout
     totalWorkoutTime: number; // Total workout time in seconds
     remainingWorkoutTime: number; // Remaining workout time in seconds
@@ -64,8 +64,8 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         savedState?.currentTimerIndex || null
     );
 
-    const [elapsedTime, setElapsedTime] = useState<number>(() => 
-        savedState?.elapsedTime || 0
+    const [currentTimerElapsedtime, setElapsedTime] = useState<number>(() => 
+        savedState?.currentTimerElapsedtime || 0
     ); // Elapsed time for active timer in milliseconds
 
     const [totalElapsedTime, setTotalElapsedTime] = useState<number>(() => 
@@ -123,11 +123,11 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         const timerRounds = currentTimer.totalRounds || 1;
         const totalDuration = (workTime + restTime) * timerRounds * 1000; // Convert to milliseconds
 
-        if (elapsedTime >= totalDuration) {
+        if (currentTimerElapsedtime >= totalDuration) {
             nextTimer(); // Move to the next timer
             setElapsedTime(0); // Reset elapsed time for the next timer
         }
-    }, [elapsedTime, currentTimerIndex, timers]);
+    }, [currentTimerElapsedtime, currentTimerIndex, timers]);
 
     // Helper function to calculate total workout time
     const calculateTotalWorkoutTime = (timers: TimerConfig[]) => {
@@ -220,7 +220,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 WorkoutStateManager.saveStateImmediate({
                     timers: newTimers,
                     currentTimerIndex,
-                    elapsedTime,
+                    currentTimerElapsedtime,
                     totalElapsedTime,
                     lastUpdated: Date.now(),
                     isWorkoutEditable: false,
@@ -237,8 +237,8 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         if (currentTimerIndex !== null) {
             const nextIndex = currentTimerIndex + 1;
 
-            // Stabilize elapsedTime and totalElapsedTime references to minimize ms drift
-            const stabilizedElapsedTime = elapsedTime;
+            // Stabilize currentTimerElapsedtime and totalElapsedTime references to minimize ms drift
+            const stabilizedElapsedTime = currentTimerElapsedtime;
             // const stabilizedTotalElapsedTime = totalElapsedTime;
 
             // Current timer and skipped time calculation
@@ -307,7 +307,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             WorkoutStateManager.saveStateImmediate({
                 timers,
                 currentTimerIndex: nextIndex < timers.length ? nextIndex : null,
-                elapsedTime: 0,
+                currentTimerElapsedtime: 0,
                 totalElapsedTime: updatedTotalElapsedTime,
                 lastUpdated: Date.now(),
                 isWorkoutEditable,
@@ -358,14 +358,14 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             WorkoutStateManager.saveState({
                 timers,
                 currentTimerIndex,
-                elapsedTime,
+                currentTimerElapsedtime,
                 totalElapsedTime,
                 lastUpdated: Date.now(),
                 isWorkoutEditable: false,
                 isWorkoutPaused: currentTimer.state === 'paused',
             });
         }
-    }, [timers, currentTimerIndex, elapsedTime, totalElapsedTime]);
+    }, [timers, currentTimerIndex, currentTimerElapsedtime, totalElapsedTime]);
 
     // Clear stored state when workout is reset or completed
     useEffect(() => {
@@ -379,7 +379,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
             value={{
                 timers,
                 currentTimerIndex,
-                elapsedTime,
+                currentTimerElapsedtime,
                 totalElapsedTime,
                 totalWorkoutTime,
                 remainingWorkoutTime,

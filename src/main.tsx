@@ -11,6 +11,7 @@ import TimersView from './views/TimersView';
 import WorkoutView from './views/WorkoutView';
 import NotFoundView from './views/NotFoundView';
 import EditTimerView from './views/EditTimerView';
+import HistoryView from './views/HistoryView';
 
 const router = createHashRouter([
     {
@@ -36,6 +37,10 @@ const router = createHashRouter([
             {
                 path: 'edit/:id',
                 element: <EditTimerView />,
+            },
+            {
+                path: 'history',
+                element: <HistoryView />,
             },
             {
                 path: '*',

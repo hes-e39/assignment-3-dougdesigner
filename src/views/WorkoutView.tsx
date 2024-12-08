@@ -13,7 +13,7 @@ import EmptyState from '../components/generic/EmptyState';
 
 
 const WorkoutView = () => {
-    const { timers, currentTimerIndex, startWorkout, nextTimer, resetWorkout, pauseTimer, resumeTimer, isWorkoutEditable, elapsedTime, remainingWorkoutTime, totalWorkoutTime } = useWorkout();
+    const { timers, currentTimerIndex, startWorkout, nextTimer, resetWorkout, pauseTimer, resumeTimer, isWorkoutEditable, currentTimerElapsedtime, remainingWorkoutTime, totalWorkoutTime } = useWorkout();
     const isWorkoutPaused = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'paused';
     const isWorkoutRunning = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'running';
     const isWorkoutActive = isWorkoutPaused || isWorkoutRunning;
@@ -134,14 +134,14 @@ const WorkoutView = () => {
                                     case 'stopwatch':
                                         return (
                                             <div key={timer.id} className="timer-container">
-                                                <Stopwatch workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description} />
+                                                <Stopwatch workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} currentTimerElapsedtime={isActive ? currentTimerElapsedtime : 0} description={timer.description} />
                                             </div>
                                         );
 
                                     case 'countdown':
                                         return (
                                             <div key={timer.id} className="timer-container">
-                                                <Countdown workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description} />
+                                                <Countdown workoutTimer workTime={timer.workTime} state={timer.state} active={isActive} currentTimerElapsedtime={isActive ? currentTimerElapsedtime : 0} description={timer.description} />
                                             </div>
                                         );
 
@@ -155,7 +155,7 @@ const WorkoutView = () => {
                                                     totalRounds={timer.totalRounds}
                                                     state={timer.state}
                                                     active={isActive}
-                                                    elapsedTime={isActive ? elapsedTime : 0}
+                                                    currentTimerElapsedtime={isActive ? currentTimerElapsedtime : 0}
                                                     description={timer.description}
                                                 />
                                             </div>
@@ -164,7 +164,7 @@ const WorkoutView = () => {
                                     case 'xy':
                                         return (
                                             <div key={timer.id} className="timer-container">
-                                                <XY workoutTimer workTime={timer.workTime} totalRounds={timer.totalRounds} state={timer.state} active={isActive} elapsedTime={isActive ? elapsedTime : 0} description={timer.description}/>
+                                                <XY workoutTimer workTime={timer.workTime} totalRounds={timer.totalRounds} state={timer.state} active={isActive} currentTimerElapsedtime={isActive ? currentTimerElapsedtime : 0} description={timer.description}/>
                                             </div>
                                         );
 
