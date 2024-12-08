@@ -31,7 +31,7 @@ const AddTimerView = () => {
 
             addTimer(timer);
 
-            // alert('Timer added successfully!');
+            alert('Timer added successfully!');
             resetForm();
             navigate('/'); // Redirect to /work after saving
         } else {
