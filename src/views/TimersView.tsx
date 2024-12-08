@@ -8,7 +8,7 @@ const TimersView = () => {
         <div>
             <div className="md:flex md:items-center md:justify-between py-8">
                 <div className="min-w-0 flex-1">
-                    <h2 className="font-bold text-white truncate text-3xl tracking-tight">Add timer</h2>
+                    <h2 className="font-bold text-white truncate text-3xl tracking-tight">Timers</h2>
                 </div>
                 <div className="mt-4 flex md:ml-4 md:mt-0">
                     {/* <button

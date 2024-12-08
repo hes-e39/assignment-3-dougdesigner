@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs for timers
-import TimersList from '../components/generic/TimersList';
+// import TimersList from '../components/generic/TimersList';
 import Countdown from '../components/timers/Countdown';
 import Stopwatch from '../components/timers/Stopwatch';
 import Tabata from '../components/timers/Tabata';
@@ -9,7 +9,7 @@ import XY from '../components/timers/XY';
 import { useWorkout } from '../context/WorkoutContext';
 
 const AddTimerView = () => {
-    const { timers, addTimer, removeTimer } = useWorkout(); // Use the custom hook to access the context
+    const { addTimer } = useWorkout(); // Use the custom hook to access the context
     const [timerType, setTimerType] = useState<string | null>(null);
     const [timerConfig, setTimerConfig] = useState<any>(null); // Store the configuration for the current timer
     const [isTimerValid, setIsTimerValid] = useState(false); // Track if the timer is valid
@@ -189,11 +189,9 @@ const AddTimerView = () => {
                     {renderTimerInputs()}
                 </div>
 
-                <div className="hidden mx-auto w-full max-w-sm">
+                {/* <div className="hidden mx-auto w-full max-w-sm">
                     <TimersList timers={timers} onRemoveTimer={removeTimer} />
-                </div>
-
-
+                </div> */}
 
                 {isTimerValid && (
                     <div>

@@ -28,6 +28,7 @@ interface WorkoutContextState {
     addTimer: (timer: TimerConfig) => void;
     removeTimer: (id: string) => void;
     updateTimer: (id: string, updatedTimer: TimerConfig) => void;
+    updateTimers: (timers: TimerConfig[]) => void;
     startWorkout: () => void;
     nextTimer: (skip?: boolean) => void; // Optional skip parameter
     resetWorkout: () => void;
@@ -164,6 +165,13 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 timer.id === id ? { ...timer, ...updatedTimer } : timer
             );
             updateUrlWithTimers(newTimers); // Update URL to reflect the changes
+            return newTimers;
+        });
+    };
+
+    const updateTimers = (newTimers: TimerConfig[]) => {
+        setTimers(() => {
+            updateUrlWithTimers(newTimers); // Update URL
             return newTimers;
         });
     };
@@ -384,6 +392,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 pauseTimer,
                 resumeTimer,
                 updateTimer,
+                updateTimers,
             }}
         >
             {children}

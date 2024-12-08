@@ -21,7 +21,7 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({
     currentRounds = { current: 1, total: 1 }, // Default to { current: 1, total: 1 }
 }) => {
     return (
-        <div className="w-full overflow-hidden bg-gray-900 rounded-lg ring-1 ring-slate-900/10">
+        <div className="w-full overflow-hidden bg-slate-900 rounded-lg ring-1 ring-slate-900/10">
             <div className="mx-auto max-w-7xl">
                 <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
                     {/* Total Workout Time */}
