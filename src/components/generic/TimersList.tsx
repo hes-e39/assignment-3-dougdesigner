@@ -193,7 +193,7 @@ const TimersList = ({ disableRemove = false }: TimersListProps) => {
     if (timers.length === 0) {
         return (
             <div className="w-full max-w-lg bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
-                <p className="font-bold text-white truncate text-2xl tracking-tight">Timers</p>
+                <p className="font-bold text-white truncate text-2xl tracking-tight">Workout Timers</p>
                 <EmptyState
                     title="No timers"
                     description="Get started by adding a new timer to your workout."
@@ -206,7 +206,7 @@ const TimersList = ({ disableRemove = false }: TimersListProps) => {
 
     return (
         <div className="w-full bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
-            <p className="font-bold text-white truncate text-xl tracking-tight">Timers</p>
+            <p className="font-bold text-white truncate text-xl tracking-tight">Workout Timers</p>
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}

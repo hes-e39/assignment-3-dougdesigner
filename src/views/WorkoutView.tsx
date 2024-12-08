@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Button from '../components/generic/Button';
 import TimersList from '../components/generic/TimersList';
 import WorkoutStats from '../components/generic/WorkoutStats';
@@ -9,14 +9,16 @@ import Stopwatch from '../components/timers/Stopwatch';
 import Tabata from '../components/timers/Tabata';
 import XY from '../components/timers/XY';
 import { useWorkout } from '../context/WorkoutContext';
+import EmptyState from '../components/generic/EmptyState';
+
 
 const WorkoutView = () => {
     const { timers, currentTimerIndex, startWorkout, nextTimer, resetWorkout, pauseTimer, resumeTimer, isWorkoutEditable, elapsedTime, remainingWorkoutTime, totalWorkoutTime } = useWorkout();
-
     const isWorkoutPaused = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'paused';
     const isWorkoutRunning = currentTimerIndex !== null && timers[currentTimerIndex]?.state === 'running';
     const isWorkoutActive = isWorkoutPaused || isWorkoutRunning;
     const isWorkoutCompleted = timers.every(timer => timer.state === 'completed');
+    const navigate = useNavigate();
 
     // Automatically transition to the next timer when the current one completes
     useEffect(() => {
@@ -80,6 +82,20 @@ const WorkoutView = () => {
                     </NavLink>
                 </div>
             </div>
+
+            {timers.length == 0 && (
+                <div className="flex flex-col items-center">
+                    <div className="w-full max-w-lg bg-slate-900 px-4 py-6 sm:px-6 lg:px-8 rounded-lg">
+                        <p className="font-bold text-white truncate text-2xl tracking-tight">Workout Timers</p>
+                        <EmptyState
+                            title="No timers"
+                            description="Get started by adding a new timer to your workout."
+                            buttonText="Add timer"
+                            onButtonClick={() => navigate('/add')}
+                        />
+                    </div>
+                </div>
+            )}
 
             {timers.length > 0 && (
             <div>

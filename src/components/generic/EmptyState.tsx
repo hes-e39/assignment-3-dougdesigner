@@ -14,7 +14,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, buttonText,
             <h3 className="mt-2 text-sm font-semibold text-slate-400">{title}</h3>
             <p className="mt-1 text-sm text-slate-500">{description}</p>
             <div className="mt-6">
-                <div className="hidden">
+                <div>
                     <button
                         type="button"
                         onClick={onButtonClick}
