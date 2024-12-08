@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-
 import { getTimersFromUrl, updateUrlWithTimers } from '../services/urlState';
 import { WorkoutStateManager } from '../services/storageState';
+import { v4 as uuidv4 } from 'uuid';
 
 // Timer configuration types
 export interface TimerConfig {
@@ -34,6 +34,8 @@ interface WorkoutContextState {
     resetWorkout: () => void;
     pauseTimer: () => void;
     resumeTimer: () => void;
+    history: { id: string; date: string; timers: TimerConfig[] }[];
+    saveWorkoutToHistory: (completedTimers: TimerConfig[]) => void;
 }
 
 // Create Context
@@ -76,6 +78,26 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     const [remainingWorkoutTime, setRemainingWorkoutTime] = useState<number>(0); // Remaining workout time in seconds
     const [isWorkoutEditable, setIsWorkoutEditable] = useState<boolean>(true); // Track if workout is editable
     const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false); // Track if workout is completed
+
+    // Store workout history in state
+    const [history, setHistory] = useState(() => {
+        const storedHistory = localStorage.getItem('workoutHistory');
+        return storedHistory ? JSON.parse(storedHistory) : [];
+    });
+
+    // Save a completed workout to history
+    const saveWorkoutToHistory = (completedTimers: TimerConfig[]) => {
+        const newHistory = [
+            ...history,
+            {
+                id: uuidv4(),
+                date: new Date().toISOString(),
+                timers: completedTimers,
+            },
+        ];
+        setHistory(newHistory);
+        localStorage.setItem('workoutHistory', JSON.stringify(newHistory));
+    };
 
     // Automatically update `isWorkoutEditable` based on workout state
     useEffect(() => {
@@ -295,12 +317,22 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 setTotalElapsedTime(updatedTotalElapsedTime); // Update total elapsed time
                 setRemainingWorkoutTime(totalWorkoutTime - updatedTotalElapsedTime / 1000); // Update remaining workout time
             } else {
+                // Mark all timers as completed when the workout ends
+                const finalizedTimers = timers.map((timer) => ({
+                    ...timer,
+                    state: 'completed' as const, // Explicitly assert the type as 'completed'
+                }));
+                setTimers(finalizedTimers); // Ensure all timers are set to completed
+
                 // No more timers, end the workout
                 setIsWorkoutCompleted(true);
-                setCurrentTimerIndex(null);
-                setElapsedTime(0); // Reset elapsed time for the last timer
                 setTotalElapsedTime(updatedTotalElapsedTime); // Finalize total elapsed time
                 setRemainingWorkoutTime(0); // No time left in the workout
+                saveWorkoutToHistory(finalizedTimers); // Save completed workout to history
+                
+                // Prepare to rerun workout
+                setCurrentTimerIndex(null);
+                setElapsedTime(0); // Reset elapsed time for the last timer
             }
 
             // Save updated state
@@ -393,6 +425,8 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
                 resumeTimer,
                 updateTimer,
                 updateTimers,
+                history,
+                saveWorkoutToHistory,
             }}
         >
             {children}

@@ -31,13 +31,17 @@ function App() {
         <ErrorBoundary FallbackComponent={ErrorFallback}>
             <WorkoutProvider>
                 <nav className="bg-gray-800">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-8">
                         <div className="flex h-16 items-center justify-between">
                             <div className="flex items-center">
                                 <div className="shrink-0">
-                                    <span className="h-8 w-auto text-2xl">💪</span>
+                                    <NavLink
+                                        to="/"
+                                    >
+                                        <span className="h-8 w-auto text-2xl">💪</span>
+                                    </NavLink>
                                 </div>
-                                <div className="hidden sm:ml-6 sm:block">
+                                <div className="sm:ml-6 sm:block">
                                     <div className="flex space-x-4">
                                         <NavLink
                                             to="/"

@@ -123,7 +123,7 @@ const SortableTimer = ({
 
                     <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-gray-400">
                         <p>
-                            <strong>Work</strong> {timer.workTime.minutes}m {timer.workTime.seconds}s
+                            <strong>Work</strong> {timer.workTime.minutes > 0 && `${timer.workTime.minutes}m`} {timer.workTime.seconds > 0 && `${timer.workTime.seconds}s`}
                         </p>
                         {timer.restTime && (
                             <>
@@ -131,7 +131,7 @@ const SortableTimer = ({
                                     <circle cx="1" cy="1" r="1" />
                                 </svg>
                                 <p>
-                                    <strong>Rest</strong> {timer.restTime.minutes}m {timer.restTime.seconds}s
+                                    <strong>Rest</strong> {timer.restTime.minutes > 0 && `${timer.restTime.minutes}m`} {timer.restTime.seconds > 0 && `${timer.restTime.seconds}s`}
                                 </p>
                             </>
                         )}
